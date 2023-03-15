@@ -7,41 +7,52 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const middleware = require("../middleware");
 const { authenticate } = require('passport');
+const { body, validationResult } = require('express-validator')
 
-UserRouter.post('/signup', async (req, res) => {
-  const { username, password } = req.body;
-
-  try {
-    let user = await User.findOne({ username });
-    if (user) {
-      return res.status(400).json({ message: 'Email already exists' });
-    }
-
-    user = new User({
-      username,
-      password,
-      role: null,
-      status: 'active',
-      token: '',
-    });
-
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(password, salt);
-    user.salt = salt;
-
-    await user.save()
-
-    res.status(201).json({ message: 'User created successfully' });
-
-  } catch (err) {
-    res.status(500).json({ message: 'Server error', err });
-  }
-});
-UserRouter.post('/login',
-  middleware.isLocalAuthenticated,
+UserRouter.post('/signup',
+  body('username').isEmail().withMessage('Email is incorrect.'),
+  body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters long'),
   async (req, res, next) => {
     const { username, password } = req.body;
 
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json(errors)
+    }
+
+    try {
+      let user = await User.findOne({ username });
+      if (user) {
+        return res.status(400).json({ message: 'Email already exists' });
+      }
+
+      user = new User({
+        username,
+        password,
+        role: null,
+        status: 'active',
+        token: '',
+      });
+
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
+      user.salt = salt;
+
+      await user.save()
+
+      res.status(201).json({success:true, message: 'User created successfully' });
+
+    } catch (err) {
+      res.status(500).json({ message: 'Server error', err });
+    }
+  });
+UserRouter.post('/login',
+  // middleware.isLocalAuthenticated,
+
+    passport.authenticate('local'), 
+  async (req, res, next) => {
+    const { username, password } = req.body;
+    console.log("user2", req.user)
     try {
       const user = await User.findOne({ username });
       if (!user) {
@@ -63,18 +74,21 @@ UserRouter.post('/login',
 
       user.token = token;
       await user.save();
-
       res.status(200).json({ token: token });
+
+
     } catch (err) {
       next(err)
     }
   });
-UserRouter.delete("/logout", middleware.checkLogin, (req, res, next) => {
-  req.logout(function (err) {
-    if (err) { return next(err); }
-    res.json({ message: "successfully logout." })
-  });
-})
+UserRouter.delete("/logout",
+  // middleware.checkLogin, 
+  (req, res, next) => {
+    req.logout(function (err) {
+      if (err) { return next(err); }
+      res.json({success:true, message: "successfully logout." })
+    });
+  })
 
 UserRouter.get('/', middleware.isAdmin, async (req, res, next) => {
   try {
@@ -87,14 +101,15 @@ UserRouter.get('/', middleware.isAdmin, async (req, res, next) => {
         }
       })
       .then((users) => {
-        res.status(200).json(users);
+        res.status(200).json({success:true, data:users});
       }, (err) => next(err))
   } catch (err) {
+    console.log("er", err)
     next(err)
   }
 });
 
-UserRouter.get('/:id', middleware.isAdmin, (req, res,next) => {
+UserRouter.get('/user:id', middleware.isAdmin, (req, res, next) => {
   try {
     User.findById(req.params.id).populate("role")
       .populate({
@@ -105,14 +120,14 @@ UserRouter.get('/:id', middleware.isAdmin, (req, res,next) => {
         }
       })
       .then((user) => {
-        res.status(200).json(user);
+        res.status(200).json({success:true,data:user});
       }, (err) => next(err))
   } catch (err) {
     next(err)
   }
 });
 
-UserRouter.post('/', middleware.isAdmin, async (req, res,next) => {
+UserRouter.post('/', middleware.isAdmin, async (req, res, next) => {
   const user = new User({
     email: req.body.email,
     password: req.body.password,
@@ -123,10 +138,10 @@ UserRouter.post('/', middleware.isAdmin, async (req, res,next) => {
   });
 
   try {
-    User.create(user).then((newUser)=>{
-      res.status(201).json(newUser)
-    }, (err)=>next(err))
-    .catch((err)=>next(err))
+    User.create(user).then((newUser) => {
+      res.status(201).json({success:true,data:newUser})
+    }, (err) => next(err))
+      .catch((err) => next(err))
   } catch (err) {
     next(err)
   }
@@ -142,12 +157,12 @@ UserRouter.patch('/:id', async (req, res, next) => {
     .catch((err) => next(err));
 });
 
-UserRouter.delete('/:id', middleware.isAdmin, async (req, res,next) => {
+UserRouter.delete('/:id', middleware.isAdmin, async (req, res, next) => {
   User.findByIdAndDelete(req.params.id)
     .then((user) => {
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json');
-      res.json("User Deleted");
+      res.json({success:true,message:"User Deleted"});
     }, (err) => next(err))
     .catch((err) => next(err));
 });

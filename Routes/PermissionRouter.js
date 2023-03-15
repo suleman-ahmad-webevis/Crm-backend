@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const middleware = require('../middleware')
 const Permissions = require('../Models/Permission');
 
-permissionRouter.get("/", middleware.isAdmin,(req, res, next) => {
+permissionRouter.get("/", (req, res, next) => {
+  console.log("user3", req.user)
     Permissions.find({})
       .then((permisssions) => {
         res.status(200).json(permisssions)

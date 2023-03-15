@@ -32,7 +32,15 @@ app.use(expresssession({
   saveUninitialized: true,
   store: new MongoStore({ mongoUrl: url })
 }));
+// app.use(expresssession({
+//     secret: config.secretKey,
+//   resave: false,
+//   saveUninitialized: true,
+//   store: new MongoStore({ mongoUrl: url }),
+//   cookie: { secure: true }
+// }));
 app.use(express.static('./assets'));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -41,23 +49,23 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/user', USersRouter);
 app.use('/permissions', permissionRouter)
-app.use('/role',RoleRouter)
+app.use('/role', RoleRouter)
 app.use('/subscribe-newsletter', SubscribeRouter)
 app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use((err,req,res,next)=>{
+app.use((err, req, res, next) => {
   res.status(err.status || 500)
   res.json({
-    error:{
-      status:err.status || 500,
-      message:err.message
+    error: {
+      status: err.status || 500,
+      message: err.message,
+      success: false
     }
   })
 });

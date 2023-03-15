@@ -8,17 +8,26 @@ const config = require('./config');
 
 
 exports.local = passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(function (user, cb) {
-    process.nextTick(function () {
-        cb(null, { id: user.id, username: user.username });
-    });
-});
+// passport.serializeUser(function (user, cb) {
+//     process.nextTick(function () {
+//         cb(null, { id: user.id, username: user.username });
+//     });
+// });
 
-passport.deserializeUser(function (user, cb) {
-    process.nextTick(function () {
-        return cb(null, user);
+// passport.deserializeUser(function (user, cb) {
+//     process.nextTick(function () {
+//         return cb(null, user);
+//     });
+// });
+passport.serializeUser(function(user, done) {
+    done(null, user.id);
+  });
+  
+  passport.deserializeUser(function(id, done) {
+    User.findById(id, function(err, user) {
+      done(err, user);
     });
-});
+  });
 
 passport.use(new LocalStrategy(
     function (username, password, done, next) {
@@ -43,18 +52,21 @@ exports.checkLogin = (req, res, next) => {
     }
     next(new Error("Already Logout."))
 }
-exports.isLocalAuthenticated = function (req, res, next) {
-    passport.authenticate('local', function (err, user, info) {
+exports.isLocalAuthenticated =
+ function (req, res, next) {
+    passport.authenticate('local',function (err, user, info) {
         if (err) { return next(err); }
         if (!user) {
-            res.status(401).json(info);
+            next(new Error("User Doesn't Exist"))
         }
+        console.log("user1",user, info )
         next()
     })(req, res, next);
 }
 exports.isAdmin = (req, res, next) => {
+    console.log("user check", req.user)
     try {
-        User.findOne({ _id: req.user.id })
+        User.findOne({ _id: req.user })
             .populate("role")
             .populate({
                 path: "role",
@@ -64,7 +76,7 @@ exports.isAdmin = (req, res, next) => {
                 }
             })
             .then((user) => {
-                console.log("user", user)
+                console.log("user here", user)
                 if (user?.role?.title == "Admin") {
                     next();
                 } else {
