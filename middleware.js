@@ -48,23 +48,23 @@ exports.getToken = (user) => {
 };
 exports.checkLogin = (req, res, next) => {
     if (req.isAuthenticated()) {
-        next();
+        next()
     }
+    else
     next(new Error("Already Logout."))
 }
 exports.isLocalAuthenticated =
  function (req, res, next) {
-    passport.authenticate('local',function (err, user, info) {
+    passport.authenticate('local',function (err, user, info, done) {            
         if (err) { return next(err); }
         if (!user) {
             next(new Error("User Doesn't Exist"))
         }
-        console.log("user1",user, info )
         next()
     })(req, res, next);
 }
 exports.isAdmin = (req, res, next) => {
-    console.log("user check", req.user)
+    console.log("user", req.user)
     try {
         User.findOne({ _id: req.user })
             .populate("role")
@@ -76,7 +76,6 @@ exports.isAdmin = (req, res, next) => {
                 }
             })
             .then((user) => {
-                console.log("user here", user)
                 if (user?.role?.title == "Admin") {
                     next();
                 } else {

@@ -40,19 +40,21 @@ UserRouter.post('/signup',
 
       await user.save()
 
-      res.status(201).json({success:true, message: 'User created successfully' });
+      res.status(201).json({ success: true, message: 'User created successfully' });
 
     } catch (err) {
       res.status(500).json({ message: 'Server error', err });
     }
   });
+
+
 UserRouter.post('/login',
   // middleware.isLocalAuthenticated,
-
-    passport.authenticate('local'), 
+  body('username').isEmail().withMessage('Email is incorrect'),
+  passport.authenticate('local'),
   async (req, res, next) => {
+    console.log("user main", req.user)
     const { username, password } = req.body;
-    console.log("user2", req.user)
     try {
       const user = await User.findOne({ username });
       if (!user) {
@@ -82,12 +84,15 @@ UserRouter.post('/login',
     }
   });
 UserRouter.delete("/logout",
-  // middleware.checkLogin, 
+  middleware.checkLogin, 
   (req, res, next) => {
-    req.logout(function (err) {
-      if (err) { return next(err); }
-      res.json({success:true, message: "successfully logout." })
-    });
+    req.logOut(function(err){
+      if(err) next(err)
+      else{
+      res.json({ success: true, message: "successfully logout." })
+      }
+    })
+   
   })
 
 UserRouter.get('/', middleware.isAdmin, async (req, res, next) => {
@@ -101,7 +106,7 @@ UserRouter.get('/', middleware.isAdmin, async (req, res, next) => {
         }
       })
       .then((users) => {
-        res.status(200).json({success:true, data:users});
+        res.status(200).json({ success: true, data: users });
       }, (err) => next(err))
   } catch (err) {
     console.log("er", err)
@@ -120,7 +125,7 @@ UserRouter.get('/user:id', middleware.isAdmin, (req, res, next) => {
         }
       })
       .then((user) => {
-        res.status(200).json({success:true,data:user});
+        res.status(200).json({ success: true, data: user });
       }, (err) => next(err))
   } catch (err) {
     next(err)
@@ -139,7 +144,7 @@ UserRouter.post('/', middleware.isAdmin, async (req, res, next) => {
 
   try {
     User.create(user).then((newUser) => {
-      res.status(201).json({success:true,data:newUser})
+      res.status(201).json({ success: true, data: newUser })
     }, (err) => next(err))
       .catch((err) => next(err))
   } catch (err) {
@@ -162,7 +167,7 @@ UserRouter.delete('/:id', middleware.isAdmin, async (req, res, next) => {
     .then((user) => {
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json');
-      res.json({success:true,message:"User Deleted"});
+      res.json({ success: true, message: "User Deleted" });
     }, (err) => next(err))
     .catch((err) => next(err));
 });

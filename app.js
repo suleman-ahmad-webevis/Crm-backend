@@ -30,7 +30,8 @@ app.use(expresssession({
   secret: config.secretKey,
   resave: false,
   saveUninitialized: true,
-  store: new MongoStore({ mongoUrl: url })
+  store: new MongoStore({ mongoUrl: url }),
+  // cookie: { secure: true }
 }));
 // app.use(expresssession({
 //     secret: config.secretKey,
@@ -64,7 +65,7 @@ app.use((err, req, res, next) => {
   res.json({
     error: {
       status: err.status || 500,
-      message: err.message,
+      message: err.message || req.session.message,
       success: false
     }
   })
