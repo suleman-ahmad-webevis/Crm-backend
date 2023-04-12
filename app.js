@@ -11,12 +11,8 @@ const cors = require('cors');
 const expresssession = require('express-session')
 const MongoStore = require('connect-mongo');
 
-const USersRouter = require('./Routes/UsersRouter');
-const permissionRouter = require('./Routes/PermissionRouter')
 var passport = require('passport');
-const RoleRouter = require('./Routes/RoleRouter');
-const SubscribeRouter = require('./Routes/SubscribeNewsletterRoute');
-
+const Hire_Developer = require('./Routes/HireDeveloper');
 app.use(cors({ origin: "*" }));
 
 const url = config.mongoUrl;
@@ -25,6 +21,7 @@ const connect = mongoose.connect(url);
 connect.then((db) => {
   console.log('connected Correctly');
 }, (err) => { console.log(err) });
+
 
 app.use(expresssession({
   secret: config.secretKey,
@@ -50,11 +47,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-
-app.use('/user', USersRouter);
-app.use('/permissions', permissionRouter)
-app.use('/role', RoleRouter)
-app.use('/subscribe-newsletter', SubscribeRouter)
+app.use('/hire-developer', Hire_Developer)
 app.use(function (req, res, next) {
   next(createError(404));
 });

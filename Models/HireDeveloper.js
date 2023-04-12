@@ -2,26 +2,26 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const hire_developer = new Schema({
-    name:{
+    client_name:{
         type: String,
         require: true,
     },
-    email:{
+    client_email:{
         type: String,
         require: true,
     },
-    developer:{
+    developer_stack:{
         type: String,
         require: true,
     },
-    description:{
+    developer_name:{
         type: String,
         require: true,
     },
-    quotation:{
+    developer_price:{
         type: Number,
     }
 }, { timestamps: true })
-const Hire_Developer = mongoose.model('Hire_Developer', hire_developer);
+const Hire_Developer = mongoose.model('Hire_Developer', hire_developer );
 
 module.exports = Hire_Developer
