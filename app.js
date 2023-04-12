@@ -12,8 +12,7 @@ const expresssession = require('express-session')
 const MongoStore = require('connect-mongo');
 
 var passport = require('passport');
-
-const QueriesRouter = require('./Routes/QueriesRouter');
+const DealsRouter = require('./Routes/DealsRouter');
 app.use(cors({ origin: "*" }));
 
 const url = config.mongoUrl;
@@ -48,7 +47,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-app.use('/query', QueriesRouter)
+app.use('/deal', DealsRouter)
 app.use(function (req, res, next) {
   next(createError(404));
 });
