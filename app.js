@@ -11,8 +11,10 @@ const cors = require('cors');
 const expresssession = require('express-session')
 const MongoStore = require('connect-mongo');
 
+const USersRouter = require('./Routes/UsersRouter');
+const permissionRouter = require('./Routes/PermissionRouter')
 var passport = require('passport');
-const SubscribeRouter = require('./Routes/SubscribeNewsletterRoute');
+const RoleRouter = require('./Routes/RoleRouter');
 app.use(cors({ origin: "*" }));
 
 const url = config.mongoUrl;
@@ -46,7 +48,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/subscribe-newsletter', SubscribeRouter)
+
+
+app.use('/user', USersRouter);
+app.use('/permissions', permissionRouter)
+app.use('/role', RoleRouter)
 app.use(function (req, res, next) {
   next(createError(404));
 });
