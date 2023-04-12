@@ -12,7 +12,7 @@ const expresssession = require('express-session')
 const MongoStore = require('connect-mongo');
 
 var passport = require('passport');
-const OnBoardsRouter = require('./Routes/OnBoardsRouter');
+const ServiceRouter = require('./Routes/ServiceRouter');
 app.use(cors({ origin: "*" }));
 
 const url = config.mongoUrl;
@@ -46,7 +46,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/onBoard', OnBoardsRouter)
+
+
+app.use('/service', ServiceRouter);
 app.use(function (req, res, next) {
   next(createError(404));
 });
