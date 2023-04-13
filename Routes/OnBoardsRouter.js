@@ -1,84 +1,75 @@
-const express = require("express");
-const OnBoardsRouter = express.Router();
-const OnBoards = require("../Models/OnBoard");
+const express = require('express');
+const onBoardRouter = express.Router();
+const OnBoard = require('../Models/OnBoard');
+const middleware = require("../middleware");
 
-// Create a new onboarding document
-OnBoardsRouter.post("/", async (req, res) => {
+// Get all OnBoard
+onBoardRouter.get('/',  middleware.isAdmin, async (req, res, next) => {
   try {
-    const onBoard = new OnBoards(req.body);
-    await onBoard.save();
-    res.send(onBoard);
+    OnBoard.find()
+    .then((onBoard) => {
+      res.status(200).json({ success: true, data: onBoard });
+    }, (err) => next(err))
   } catch (err) {
-    res.status(500).send(err);
+    console.log("er", err)
+    next(err)
   }
 });
 
-// Get all onboarding documents
-OnBoardsRouter.get("/", async (req, res) => {
+// Get a specific onBoard by ID
+onBoardRouter.get('/:id',  middleware.isAdmin, async (req, res, next) => {
   try {
-    const onBoards = await OnBoards.find({});
-    res.send(onBoards);
+    OnBoard.findById(req.params.id)
+      .then((onBoard) => {
+        res.status(200).json({ success: true, data: onBoard });
+      }, (err) => next(err))
   } catch (err) {
-    res.status(500).send(err);
+    next(err)
   }
 });
 
-// Get a single onboarding document by ID
-OnBoardsRouter.get("/:id", getOnBoard, async (req, res) => {
-  try {
-    const onBoard = await OnBoards.findById(req.params.id);
-    if (!onBoard) {
-      return res.status(404).send();
-    }
-    res.send(onBoard);
-  } catch (err) {
-    res.status(500).send(err);
-  }
-});
+// Create a new onBoard
+onBoardRouter.post('/',  middleware.isAdmin, async (req, res, next) => {
+  const onBoard = new OnBoard({
+    name: req.body.name,
+    email: req.body.email,
+    hire_date: req.body.hire_date,
+    department: req.body.department,
+    manager: req.body.manager,
+    job_title: req.body.job_title
+  });
 
-// Update an existing onboarding document by ID
-OnBoardsRouter.patch("/:id", getOnBoard, async (req, res) => {
   try {
-    const onBoard = await OnBoards.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-    if (!onBoard) {
-      return res.status(404).send();
-    }
-    res.send(onBoard);
-  } catch (err) {
-    res.status(500).send(err);
-  }
-});
-
-// Delete an onboarding document by ID
-OnBoardsRouter.delete("/:id", getOnBoard, async (req, res) => {
-  try {
-    const onBoard = await OnBoards.findByIdAndDelete(req.params.id);
-    if (!onBoard) {
-      return res.status(404).send();
-    }
-    res.send(onBoard);
-  } catch (err) {
-    res.status(500).send(err);
-  }
-});
-
-// Middleware function to get a single onBoarding by ID
-async function getOnBoard(req, res, next) {
-  let onBoarding;
-  try {
-    onBoarding = await OnBoards.findById(req.params.id);
-    if (onBoarding == null) {
-      return res.status(404).json({ message: "onBoarding not found" });
-    }
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
-
-  res.onBoarding = onBoarding;
-  next();
+    onBoard.save()
+    .then(() => {
+      res.status(200).json({ success: true, message: "onBoard is created successfully" });
+    }, (err) => next(err))
+} catch (err) {
+  next(err)
 }
+});
 
-module.exports = OnBoardsRouter;
+// Update a onBoard
+onBoardRouter.patch('/:id',  middleware.isAdmin, async (req, res, next) => {
+  OnBoard.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true })
+    .then(() => {
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.json("onBoard Updated Successfully.");
+    }, (err) => next(err))
+    .catch((err) => next(err));
+});
+
+// Delete a onBoard
+
+onBoardRouter.delete('/:id',  middleware.isAdmin, async (req, res, next) => {
+  OnBoard.findByIdAndDelete(req.params.id)
+    .then(() => {
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.json({ success: true, message: "onBoard Deleted" });
+    }, (err) => next(err))
+    .catch((err) => next(err));
+});
+
+module.exports = onBoardRouter;
