@@ -11,16 +11,7 @@ const cors = require('cors');
 const expresssession = require('express-session')
 const MongoStore = require('connect-mongo');
 
-const USersRouter = require('./Routes/UsersRouter');
-const permissionRouter = require('./Routes/PermissionRouter')
 var passport = require('passport');
-const RoleRouter = require('./Routes/RoleRouter');
-const SubscribeRouter = require('./Routes/SubscribeNewsletterRoute');
-const QueriesRouter = require('./Routes/QueriesRouter');
-const Hire_Developer = require('./Routes/HireDeveloper');
-const MeetingsRouter = require('./Routes/MeetingsRouter');
-const DealsRouter = require('./Routes/DealsRouter');
-const OnBoardsRouter = require('./Routes/OnBoardsRouter');
 const DeveloperRouter = require('./Routes/Developer');
 app.use(cors({ origin: "*" }));
 
@@ -57,15 +48,6 @@ app.use(passport.session());
 
 
 
-app.use('/user', USersRouter);
-app.use('/permissions', permissionRouter)
-app.use('/role', RoleRouter)
-app.use('/subscribe-newsletter', SubscribeRouter)
-app.use('/query', QueriesRouter)
-app.use('/hire-developer', Hire_Developer)
-app.use('/meeting', MeetingsRouter)
-app.use('/deal', DealsRouter)
-app.use('/onBoard', OnBoardsRouter)
 app.use("/developer", DeveloperRouter)
 app.use(function (req, res, next) {
   next(createError(404));
