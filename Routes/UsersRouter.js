@@ -152,8 +152,8 @@ UserRouter.post('/', middleware.isAdmin, async (req, res, next) => {
   }
 });
 
-UserRouter.patch('/:id', async (req, res, next) => {
-  User.findByIdAndUpdate(req.params.id, { $push: req.body }, { new: true })
+UserRouter.patch('/:id', middleware.isAdmin, async (req, res, next) => {
+  User.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true })
     .then((user) => {
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json');
