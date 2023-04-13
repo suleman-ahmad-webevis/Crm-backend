@@ -1,15 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const hire_developer = new Schema({
-    client_name:{
-        type: String,
-        required: true 
-    },
-    client_email:{
-        type: String,
-        required: true 
-    },
+const developer = new Schema({
     developer_stack:{
         type: String,
         required: true 
@@ -23,6 +15,6 @@ const hire_developer = new Schema({
         required: true 
     }
 }, { timestamps: true })
-const Hire_Developer = mongoose.model('Hire_Developer', hire_developer );
+const Developer = mongoose.model('Developer', developer );
 
-module.exports = Hire_Developer
+module.exports = Developer

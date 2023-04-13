@@ -21,6 +21,7 @@ const Hire_Developer = require('./Routes/HireDeveloper');
 const MeetingsRouter = require('./Routes/MeetingsRouter');
 const DealsRouter = require('./Routes/DealsRouter');
 const OnBoardsRouter = require('./Routes/OnBoardsRouter');
+const DeveloperRouter = require('./Routes/Developer');
 app.use(cors({ origin: "*" }));
 
 const url = config.mongoUrl;
@@ -65,6 +66,7 @@ app.use('/hire-developer', Hire_Developer)
 app.use('/meeting', MeetingsRouter)
 app.use('/deal', DealsRouter)
 app.use('/onBoard', OnBoardsRouter)
+app.use("/developer", DeveloperRouter)
 app.use(function (req, res, next) {
   next(createError(404));
 });
