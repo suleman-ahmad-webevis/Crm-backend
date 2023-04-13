@@ -1,49 +1,75 @@
-const express = require('express')
-const Hire_Developer = require('../Models/HireDeveloper')
-const router = express.Router()
+const express = require('express');
+const router = express.Router();
+const Hire_Developer = require('../Models/HireDeveloper');
 const middleware = require("../middleware");
 
-router.route("/", middleware.isAdmin)
-.post( async (req, res, next) => {
-    const user = (req.body)
-    try {
-      Hire_Developer.create(user).then((newUser) => {
-        res.status(201).json({ success: true, data: newUser })
-      }, (err) => next(err))
-        .catch((err) => next(err))
-    } catch (err) {
-      next(err)
-    }
-  })
-.get((req,res,next)=>{
+// Get all Hire_Developer
+router.get('/', middleware.isAdmin, async (req, res, next) => {
+  try {
     Hire_Developer.find()
-    .then((data)=>{
-        res.status(200).json({success:true, data:data})
-    }, (err)=>next(err))
-    .catch((err)=>next(err))
-})
-router.route("/:id", middleware.isAdmin)
-.get((req, res, next)=>{
+    .then((hireDeveloper) => {
+      res.status(200).json({ success: true, data: hireDeveloper });
+    }, (err) => next(err))
+  } catch (err) {
+    console.log("er", err)
+    next(err)
+  }
+});
+
+// Get a specific deal by ID
+router.get('/:id', middleware.isAdmin, (req, res, next) => {
+  try {
     Hire_Developer.findById(req.params.id)
-    .then((data)=>{
-        res.status(200).json({success:true, data:data})
-    }, (err)=>next(err))
-    .catch((err)=>next(err))
-})
-.patch((req,res,next)=>{
-    Hire_Developer.findByIdAndUpdate(req.params.id,{ $set: req.body}, { new: true })
-    .then((data)=>{
-        res.status(200).json({success:true, data:data})
-    }, (err)=>next(err))
-    .catch((err)=>next(err))
-})
-.delete((req,res,next)=>{
-    Hire_Developer.findByIdAndDelete(req.params.id)
-    .then((data)=>{
-        res.status(200).json({success:true, message:"Successfully Deleted."})
-    }, (err)=>next(err))
-    .catch((err)=>next(err))
-})
+      .then((hireDeveloper) => {
+        res.status(200).json({ success: true, data: hireDeveloper });
+      }, (err) => next(err))
+  } catch (err) {
+    next(err)
+  }
+});
+
+// Create a new deal
+router.post('/', middleware.isAdmin, async (req, res) => {
+  const deal = new Hire_Developer({
+    client_name: req.body.client_name,
+    client_email: req.body.client_email,
+    developer_stack: req.body.developer_stack,
+    developer_name: req.body.developer_name,
+    developer_price: req.body.developer_price,
+  });
+
+  try {
+    deal.save()
+    .then(() => {
+      res.status(200).json({ success: true, message: "hireDeveloper is created successfully" });
+    }, (err) => next(err))
+} catch (err) {
+  next(err)
+}
+});
+
+// Update a deal
+router.patch('/:id', middleware.isAdmin, async (req, res, next) => {
+  Hire_Developer.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true })
+    .then(() => {
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.json("hireDeveloper Updated Successfully.");
+    }, (err) => next(err))
+    .catch((err) => next(err));
+});
+
+// Delete a deal
+
+router.delete('/:id', middleware.isAdmin, async (req, res, next) => {
+  Hire_Developer.findByIdAndDelete(req.params.id)
+    .then(() => {
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.json({ success: true, message: "hireDeveloper Deleted" });
+    }, (err) => next(err))
+    .catch((err) => next(err));
+});
 
 router.route("/developer/:names", middleware.isAdmin)
 .get((req, res, next) => {
@@ -97,4 +123,3 @@ router.route("/developers/:search", middleware.isAdmin)
 });
 
 module.exports = router;
-
