@@ -4,7 +4,7 @@ const Deals = require('../Models/Deal');
 const middleware = require("../middleware");
 
 // Get all deals
-DealsRouter.get('/',  async (req, res, next) => {
+DealsRouter.get('/', middleware.isAdmin, async (req, res, next) => {
   try {
     Deals.find()
     .then((deals) => {
@@ -17,7 +17,7 @@ DealsRouter.get('/',  async (req, res, next) => {
 });
 
 // Get a specific deal by ID
-DealsRouter.get('/:id',  (req, res, next) => {
+DealsRouter.get('/:id', middleware.isAdmin, (req, res, next) => {
   try {
     Deals.findById(req.params.id)
       .then((deal) => {
@@ -29,7 +29,7 @@ DealsRouter.get('/:id',  (req, res, next) => {
 });
 
 // Create a new deal
-DealsRouter.post('/',  async (req, res) => {
+DealsRouter.post('/', middleware.isAdmin, async (req, res) => {
   const deal = new Deals({
     client_name: req.body.client_name,
     developer_name: req.body.developer_name,
@@ -50,9 +50,9 @@ DealsRouter.post('/',  async (req, res) => {
 });
 
 // Update a deal
-DealsRouter.patch('/:id',  async (req, res, next) => {
+DealsRouter.patch('/:id', middleware.isAdmin, async (req, res, next) => {
   Deals.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true })
-    .then((a) => {
+    .then(() => {
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json');
       res.json("Deal Updated Successfully.");
@@ -62,7 +62,7 @@ DealsRouter.patch('/:id',  async (req, res, next) => {
 
 // Delete a deal
 
-DealsRouter.delete('/:id',  async (req, res, next) => {
+DealsRouter.delete('/:id', middleware.isAdmin, async (req, res, next) => {
   Deals.findByIdAndDelete(req.params.id)
     .then(() => {
       res.statusCode = 200;
