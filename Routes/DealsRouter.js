@@ -1,24 +1,35 @@
 const express = require('express');
 const DealsRouter = express.Router();
 const Deals = require('../Models/Deal');
+const middleware = require("../middleware");
 
 // Get all deals
-DealsRouter.get('/', async (req, res) => {
+DealsRouter.get('/', middleware.isAdmin, async (req, res, next) => {
   try {
-    const deals = await Deals.find();
-    res.json(deals);
+    Deals.find()
+    .then((deals) => {
+      res.status(200).json({ success: true, data: deals });
+    }, (err) => next(err))
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.log("er", err)
+    next(err)
   }
 });
 
 // Get a specific deal by ID
-DealsRouter.get('/:id', getDeal, (req, res) => {
-  res.json(res.deal);
+DealsRouter.get('/:id', middleware.isAdmin, (req, res, next) => {
+  try {
+    Deals.findById(req.params.id)
+      .then((deal) => {
+        res.status(200).json({ success: true, data: deal });
+      }, (err) => next(err))
+  } catch (err) {
+    next(err)
+  }
 });
 
 // Create a new deal
-DealsRouter.post('/', async (req, res) => {
+DealsRouter.post('/', middleware.isAdmin, async (req, res) => {
   const deal = new Deals({
     client_name: req.body.client_name,
     developer_name: req.body.developer_name,
@@ -29,70 +40,36 @@ DealsRouter.post('/', async (req, res) => {
   });
 
   try {
-    const newDeal = await deal.save();
-    res.status(201).json(newDeal);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
+    deal.save()
+    .then(() => {
+      res.status(200).json({ success: true, message: "Deal is created successfully" });
+    }, (err) => next(err))
+} catch (err) {
+  next(err)
+}
 });
 
 // Update a deal
-DealsRouter.patch('/:id', getDeal, async (req, res) => {
-  if (req.body.client_name != null) {
-    res.deal.client_name = req.body.client_name;
-  }
-
-  if (req.body.developer_name != null) {
-    res.deal.developer_name = req.body.developer_name;
-  }
-
-  if (req.body.title != null) {
-    res.deal.title = req.body.title;
-  }
-
-  if (req.body.description != null) {
-    res.deal.description = req.body.description;
-  }
-
-  if (req.body.budget != null) {
-    res.deal.budget = req.body.budget;
-  }
-
-  if (req.body.deadline_date != null) {
-    res.deal.deadline_date = req.body.deadline_date;
-  }
-
-  try {
-    const updatedDeal = await res.deal.save();
-    res.json(updatedDeal);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
+DealsRouter.patch('/:id', middleware.isAdmin, async (req, res, next) => {
+  Deals.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true })
+    .then(() => {
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.json("Deal Updated Successfully.");
+    }, (err) => next(err))
+    .catch((err) => next(err));
 });
 
 // Delete a deal
-DealsRouter.delete('/:id', getDeal, async (req, res) => {
-  try {
-    await res.deal.remove();
-    res.json({ message: 'Deleted deal' });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+
+DealsRouter.delete('/:id', middleware.isAdmin, async (req, res, next) => {
+  Deals.findByIdAndDelete(req.params.id)
+    .then(() => {
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.json({ success: true, message: "Deal Deleted" });
+    }, (err) => next(err))
+    .catch((err) => next(err));
 });
-
-async function getDeal(req, res, next) {
-  let deal;
-  try {
-    deal = await Deals.findById(req.params.id);
-    if (deal == null) {
-      return res.status(404).json({ message: 'Cannot find deal' });
-    }
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
-
-  res.deal = deal;
-  next();
-}
 
 module.exports = DealsRouter;
