@@ -22,6 +22,7 @@ const MeetingsRouter = require('./Routes/MeetingsRouter');
 const DealsRouter = require('./Routes/DealsRouter');
 const OnBoardsRouter = require('./Routes/OnBoardsRouter');
 const DeveloperRouter = require('./Routes/Developer');
+const ServiceRouter = require('./Routes/ServiceRouter');
 app.use(cors({ origin: "*" }));
 
 const url = config.mongoUrl;
@@ -29,8 +30,8 @@ const connect = mongoose.connect(url);
 
 connect.then((db) => {
   console.log('connected Correctly');
+  console.log(mongoose.connection.readyState)
 }, (err) => { console.log(err) });
-
 
 app.use(expresssession({
   secret: config.secretKey,
@@ -67,6 +68,7 @@ app.use('/meeting', MeetingsRouter)
 app.use('/deal', DealsRouter)
 app.use('/onBoard', OnBoardsRouter)
 app.use("/developer", DeveloperRouter)
+app.use("/service", ServiceRouter)
 app.use(function (req, res, next) {
   next(createError(404));
 });

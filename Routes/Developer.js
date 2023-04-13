@@ -29,7 +29,7 @@ DeveloperRouter.get('/:id', middleware.isAdmin, (req, res, next) => {
 });
 
 // Create a new deal
-DeveloperRouter.post('/', middleware.isAdmin, async (req, res) => {
+DeveloperRouter.post('/', middleware.isAdmin, async (req, res, next) => {
   const deal = new Developer({
     developer_stack: req.body.developer_stack,
     developer_name: req.body.developer_name,
