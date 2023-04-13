@@ -3,19 +3,22 @@ const MeetingsRouter = express.Router()
 const Meetings = require('../Models/Meeting')
 
 // Get all meetings
-MeetingsRouter.get('/', async (req, res) => {
+MeetingsRouter.get('/',  async (req, res, next) => {
   try {
-    const meetings = await Meetings.find()
+     Meetings.find()
       .populate('client_name')
-      .populate('developer_name');
-    res.json(meetings);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+      .populate('developer_name')
+    .then((meeting) => {
+      res.status(200).json({ success: true, data: meeting });
+    }, (err) => next(err))
+} catch (err) {
+  console.log("er", err)
+  next(err)
+}
 });
 
 // Create a new meeting
-MeetingsRouter.post('/', async (req, res) => {
+MeetingsRouter.post('/',  async (req, res, next) => {
   const meeting = new Meetings({
     client_name: req.body.client_name,
     developer_name: req.body.developer_name,
@@ -25,71 +28,72 @@ MeetingsRouter.post('/', async (req, res) => {
   });
 
   try {
-    const newMeeting = await meeting.save();
-    res.status(201).json(newMeeting);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
+    meeting.save()
+    .then(() => {
+      res.status(200).json({ success: true, message: "Meeting is scheduled successfully" });
+    }, (err) => next(err))
+} catch (err) {
+  console.log("er", err)
+  next(err)
+}
 });
 
 // Get a single meeting by ID
-MeetingsRouter.get('/:id', getMeeting, (req, res) => {
-  res.json(res.meeting);
+MeetingsRouter.get('/:id',  (req, res, next) => {
+  try {
+    Meetings.findById(req.params.id)
+    .populate('client_name')
+    .populate('developer_name')
+      .then((meeting) => {
+        res.status(200).json({ success: true, data: meeting });
+      }, (err) => next(err))
+  } catch (err) {
+    next(err)
+  }
 });
 
 // Update a meeting by ID
-MeetingsRouter.patch('/:id', getMeeting, async (req, res) => {
-  if (req.body.client_name != null) {
-    res.meeting.client_name = req.body.client_name;
-  }
-  if (req.body.developer_name != null) {
-    res.meeting.developer_name = req.body.developer_name;
-  }
-  if (req.body.date != null) {
-    res.meeting.date = req.body.date;
-  }
-  if (req.body.start_time != null) {
-    res.meeting.start_time = req.body.start_time;
-  }
-  if (req.body.end_time != null) {
-    res.meeting.end_time = req.body.end_time;
-  }
-
+MeetingsRouter.patch('/:id',  async (req, res) => {
+  let meeting;
   try {
-    const updatedMeeting = await res.meeting.save();
-    res.json(updatedMeeting);
+      meeting = await Meetings.findById(req.params.id);
+      if (meeting == null) {
+          return res.status(404).json({ message: 'Meeting not found' });
+      }
+
+      if (req.body.client_name != null) {
+          meeting.client_name = req.body.client_name;
+      }
+      if (req.body.developer_name != null) {
+          meeting.developer_name = req.body.developer_name;
+      }
+      if (req.body.date != null) {
+          meeting.date = req.body.date;
+      }
+      if (req.body.start_time != null) {
+          meeting.start_time = req.body.start_time;
+      }
+      if (req.body.end_time != null) {
+          meeting.end_time = req.body.end_time;
+      }
+
+      const updatedMeeting = await meeting.save();
+      res.status(200).json({ success: true, data: updatedMeeting });
   } catch (err) {
-    res.status(400).json({ message: err.message });
+      res.status(400).json({ message: err.message });
   }
 });
 
 // Delete a meeting by ID
-MeetingsRouter.delete('/:id', getMeeting, async (req, res) => {
-  try {
-    await res.meeting.remove();
-    res.json({ message: 'Meeting deleted' });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+MeetingsRouter.delete('/:id',  async (req, res, next) => {
+  Meetings.findByIdAndDelete(req.params.id)
+    .then(() => {
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.json({ success: true, message: "Meeting Deleted" });
+    }, (err) => next(err))
+    .catch((err) => next(err));
 });
-
-// Middleware function to get a single meeting by ID
-async function getMeeting(req, res, next) {
-  let meeting;  
-  try {
-    meeting = await Meetings.findById(req.params.id)
-      .populate('client_name')
-      .populate('developer_name');
-    if (meeting == null) {
-      return res.status(404).json({ message: 'Meeting not found' });
-    }
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
-
-  res.meeting = meeting;
-  next();
-}
 
 MeetingsRouter.post("/sendEmail", async (req, res, next) => {
   const emailList = req.body.emails;
