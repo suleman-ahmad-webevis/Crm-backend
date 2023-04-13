@@ -172,4 +172,4 @@ UserRouter.delete('/:id', middleware.isAdmin, async (req, res, next) => {
     .catch((err) => next(err));
 });
 
-module.exports = UserRouter;
+module.exports = UserRouter; 
