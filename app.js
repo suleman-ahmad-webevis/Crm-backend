@@ -4,7 +4,6 @@ var path = require('path');
 const mongoose = require('mongoose');
 var config = require('./config');
 var bodyParser = require('body-parser');
-var path = require('path')
 require('dotenv/config');
 var app = express();
 const cors = require('cors');
@@ -55,9 +54,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
-
-
-
 app.use('/user', USersRouter);
 app.use('/permissions', permissionRouter)
 app.use('/role', RoleRouter)
