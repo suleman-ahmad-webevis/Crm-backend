@@ -1,9 +1,7 @@
 const express = require("express");
 const UserRouter = express.Router();
-const mongoose = require("mongoose");
 const User = require("../Models/User");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const middleware = require("../middleware");
 const { authenticate } = require("passport");
