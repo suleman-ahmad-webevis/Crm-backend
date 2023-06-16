@@ -1,10 +1,9 @@
 const express = require('express');
 const DeveloperRouter = express.Router();
 const Developer = require('../Models/Developer');
-const middleware = require("../middleware");
 
 // Get all Developer
-DeveloperRouter.get('/', middleware.isAdmin, async (req, res, next) => {
+DeveloperRouter.get('/', async (req, res, next) => {
   try {
     Developer.find()
     .then((Developer) => {
@@ -17,7 +16,7 @@ DeveloperRouter.get('/', middleware.isAdmin, async (req, res, next) => {
 });
 
 // Get a specific deal by ID
-DeveloperRouter.get('/:id', middleware.isAdmin, (req, res, next) => {
+DeveloperRouter.get('/:id', (req, res, next) => {
   try {
     Developer.findById(req.params.id)
       .then((Developer) => {
@@ -47,7 +46,7 @@ DeveloperRouter.post('/', middleware.isAdmin, async (req, res, next) => {
 });
 
 // Update a deal
-DeveloperRouter.patch('/:id', middleware.isAdmin, async (req, res, next) => {
+DeveloperRouter.patch('/:id', async (req, res, next) => {
   Developer.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true })
     .then(() => {
       res.statusCode = 200;
@@ -59,7 +58,7 @@ DeveloperRouter.patch('/:id', middleware.isAdmin, async (req, res, next) => {
 
 // Delete a deal
 
-DeveloperRouter.delete('/:id', middleware.isAdmin, async (req, res, next) => {
+DeveloperRouter.delete('/:id', async (req, res, next) => {
   Developer.findByIdAndDelete(req.params.id)
     .then(() => {
       res.statusCode = 200;
@@ -69,7 +68,7 @@ DeveloperRouter.delete('/:id', middleware.isAdmin, async (req, res, next) => {
     .catch((err) => next(err));
 });
 
-DeveloperRouter.route("/developer/:names", middleware.isAdmin)
+DeveloperRouter.route("/developer/:names")
 .get((req, res, next) => {
     const name = req.body.name;
   
@@ -89,7 +88,7 @@ DeveloperRouter.route("/developer/:names", middleware.isAdmin)
       res.status(200).json({ success: true, data: data });
     }).catch((err) => next(err));
 });
-DeveloperRouter.route("/developers/:search", middleware.isAdmin)
+DeveloperRouter.route("/developers/:search")
 .get((req, res, next) => {
     const minAmount = req.body.minAmount;
     const maxAmount = req.body.maxAmount;
