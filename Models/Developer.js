@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const developer = new Schema({
+const developerSchema = new Schema({
     developer_stack:{
         type: String,
         required: true 
@@ -15,6 +15,6 @@ const developer = new Schema({
         required: true 
     }
 }, { timestamps: true })
-const Developer = mongoose.model('Developer', developer );
+const Developer = mongoose.model('Developer', developerSchema );
 
 module.exports = Developer
