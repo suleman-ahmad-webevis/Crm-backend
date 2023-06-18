@@ -15,12 +15,10 @@ router.post("/", async (req, res) => {
   try {
     deal.save().then(
       () => {
-        res
-          .status(200)
-          .json({
-            success: true,
-            message: "hireDeveloper is created successfully",
-          });
+        res.status(200).json({
+          success: true,
+          message: "hireDeveloper is created successfully",
+        });
       },
       (err) => next(err)
     );
@@ -67,9 +65,7 @@ router.patch("/:id", async (req, res, next) => {
   )
     .then(
       () => {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.json("hireDeveloper Updated Successfully.");
+        res.status(200).res.json("HireDeveloper Updated Successfully.");
       },
       (err) => next(err)
     )
@@ -81,9 +77,9 @@ router.delete("/:id", async (req, res, next) => {
   HireDeveloper.findByIdAndDelete(req.params.id)
     .then(
       () => {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.json({ success: true, message: "hireDeveloper Deleted" });
+        res
+          .status(200)
+          .res.json({ success: true, message: "HireDeveloper Deleted" });
       },
       (err) => next(err)
     )
@@ -92,7 +88,6 @@ router.delete("/:id", async (req, res, next) => {
 
 router.route("/developer/:names").get((req, res, next) => {
   const name = req.body.name;
-
   HireDeveloper.aggregate([
     {
       $match: {
@@ -111,6 +106,7 @@ router.route("/developer/:names").get((req, res, next) => {
     })
     .catch((err) => next(err));
 });
+
 router.route("/developers/:search").get((req, res, next) => {
   const minAmount = req.body.minAmount;
   const maxAmount = req.body.maxAmount;

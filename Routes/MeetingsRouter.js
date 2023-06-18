@@ -14,12 +14,10 @@ MeetingsRouter.post("/", async (req, res, next) => {
   try {
     meeting.save().then(
       () => {
-        res
-          .status(200)
-          .json({
-            success: true,
-            message: "Meeting is scheduled successfully",
-          });
+        res.status(200).json({
+          success: true,
+          message: "Meeting is scheduled successfully",
+        });
       },
       (err) => next(err)
     );
@@ -99,9 +97,7 @@ MeetingsRouter.delete("/:id", async (req, res, next) => {
   Meetings.findByIdAndDelete(req.params.id)
     .then(
       () => {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.json({ success: true, message: "Meeting Deleted" });
+        res.status(200).res.json({ success: true, message: "Meeting Deleted" });
       },
       (err) => next(err)
     )
@@ -125,7 +121,7 @@ MeetingsRouter.post("/sendEmail", async (req, res, next) => {
       }
     });
   }
-  res.status(200).send("Welcome emails sent successfully!");
+  res.status(200).json({ message: "Welcome emails sent successfully" });
 });
 
 module.exports = MeetingsRouter;

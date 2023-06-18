@@ -35,9 +35,7 @@ RoleRouter.route("/:id")
     Role.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true })
       .then(
         (role) => {
-          res.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
-          res.json(role);
+          res.status(200).res.json(role);
         },
         (err) => next(err)
       )
@@ -47,9 +45,7 @@ RoleRouter.route("/:id")
     Role.findByIdAndDelete(req.params.id)
       .then(
         (role) => {
-          res.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
-          res.json(role);
+          res.status(200).res.json(role);
         },
         (err) => next(err)
       )

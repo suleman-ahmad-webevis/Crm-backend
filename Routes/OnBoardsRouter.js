@@ -18,7 +18,7 @@ onBoardRouter.post("/", async (req, res, next) => {
       () => {
         res
           .status(200)
-          .json({ success: true, message: "onBoard is created successfully" });
+          .json({ success: true, message: "OnBoard created successfully" });
       },
       (err) => next(err)
     );
@@ -32,9 +32,7 @@ onBoardRouter.patch("/:id", async (req, res, next) => {
   OnBoard.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true })
     .then(
       () => {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.json("onBoard Updated Successfully.");
+        res.status(200).res.json({ message: "onBoard Updated Successfully" });
       },
       (err) => next(err)
     )
@@ -75,9 +73,7 @@ onBoardRouter.delete("/:id", async (req, res, next) => {
   OnBoard.findByIdAndDelete(req.params.id)
     .then(
       () => {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.json({ success: true, message: "onBoard Deleted" });
+        res.status(200).res.json({ success: true, message: "OnBoard Deleted" });
       },
       (err) => next(err)
     )

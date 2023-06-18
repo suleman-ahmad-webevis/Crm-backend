@@ -3,7 +3,7 @@ const DealsRouter = express.Router();
 const Deals = require("../Models/Deal");
 
 // Create a new deal
-DealsRouter.post("/", async (req, res) => {
+DealsRouter.post("/", async (req, res, next) => {
   const deal = new Deals({
     client_name: req.body.client_name,
     developer_name: req.body.developer_name,
@@ -12,7 +12,6 @@ DealsRouter.post("/", async (req, res) => {
     budget: req.body.budget,
     deadline_date: req.body.deadline_date,
   });
-
   try {
     deal.save().then(
       () => {
@@ -61,9 +60,7 @@ DealsRouter.patch("/:id", async (req, res, next) => {
   Deals.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true })
     .then(
       () => {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.json("Deal Updated Successfully.");
+        res.status(200).res.json("Deal Updated Successfully.");
       },
       (err) => next(err)
     )
@@ -75,9 +72,7 @@ DealsRouter.delete("/:id", async (req, res, next) => {
   Deals.findByIdAndDelete(req.params.id)
     .then(
       () => {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.json({ success: true, message: "Deal Deleted" });
+        res.status(200).res.json({ success: true, message: "Deal Deleted" });
       },
       (err) => next(err)
     )

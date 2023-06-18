@@ -1,16 +1,21 @@
+//ModuleImports
 var express = require("express");
-var createError = require("http-errors");
-var path = require("path");
-const mongoose = require("mongoose");
-var config = require("./config");
-var bodyParser = require("body-parser");
-// require("dotenv/config");
-require("dotenv").config();
 var app = express();
 const cors = require("cors");
-const expresssession = require("express-session");
+var createError = require("http-errors");
+var path = require("path");
+var bodyParser = require("body-parser");
+require("dotenv").config();
+const expressSession = require("express-session");
 const MongoStore = require("connect-mongo");
 var passport = require("passport");
+//FilesImports
+var config = require("./config");
+// require("dotenv/config");
+//DBConnection
+const connectDB = require("./config/database");
+connectDB();
+
 //Routes
 const UsersRouter = require("./Routes/UsersRouter");
 const PermissionRouter = require("./Routes/PermissionRouter");
@@ -23,33 +28,34 @@ const DealsRouter = require("./Routes/DealsRouter");
 const OnBoardsRouter = require("./Routes/OnBoardsRouter");
 const DeveloperRouter = require("./Routes/Developer");
 const ServiceRouter = require("./Routes/ServiceRouter");
-var passport = require("passport");
 app.use(cors({ origin: "*" }));
-
-const url = process.env.MONGO_URL;
-const connect = mongoose.connect(url);
+// const url = process.env.MONGO_URL;
+// const connect = mongoose.connect(url);
 // const dotenv = require("dotenv");
 // dotenv.config({ path: ".env" });
-
-connect.then(
-  (db) => {
-    console.log("connected Correctly");
-    console.log(
-      "The mongoose.connection.readyState",
-      mongoose.connection.readyState
-    );
-  },
-  (err) => {
-    console.log(err);
-  }
-);
-
+// connect.then(
+//   (db) => {
+//     console.log("connected Correctly");
+//     console.log(
+//       "The mongoose.connection.readyState",
+//       mongoose.connection.readyState
+//     );
+//   },
+//   (err) => {
+//     console.log(err);
+//   }
+// );
 app.use(
-  expresssession({
+  expressSession({
     secret: config.secretKey,
     resave: false,
     saveUninitialized: true,
-    store: new MongoStore({ mongoUrl: url }),
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URL,
+      collectionName: "sessions",
+    }),
+    // cookie: { maxAge: 1000 * 60 * 60 * 40 },
+    cookie: { maxAge: 1000 * 60 * 60 * 40, secure: true },
     // cookie: { secure: true }
   })
 );
@@ -76,8 +82,7 @@ app.use("/service", ServiceRouter);
 app.use(function (req, res, next) {
   next(createError(404));
 });
-
-// error handler
+// Error handler
 app.use((err, req, res, next) => {
   res.status(err.status || 500);
   res.json({
@@ -91,5 +96,4 @@ app.use((err, req, res, next) => {
 app.listen(config.PORT || 8082, function () {
   console.log(`I'm listening at localhost:${config.PORT}`);
 });
-
 module.exports = app;

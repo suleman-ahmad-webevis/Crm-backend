@@ -6,13 +6,14 @@ const Permissions = require("../Models/Permission");
 permissionRouter.get("/", (req, res, next) => {
   Permissions.find({})
     .then(
-      (permisssions) => {
-        res.status(200).json(permisssions);
+      (permissions) => {
+        res.status(200).json(permissions);
       },
       (err) => next(err)
     )
     .catch((err) => next(new Error("Couldn't get all Permissions")));
 });
+
 permissionRouter.post("/", (req, res, next) => {
   const newPermission = new Permissions({
     title: req.body.title,
@@ -20,12 +21,12 @@ permissionRouter.post("/", (req, res, next) => {
   });
   Permissions.create(newPermission)
     .then(
-      (permisssions) => {
-        res.status(200).json(permisssions);
+      (permissions) => {
+        res.status(200).json(permissions);
       },
       (err) => next(err)
     )
-    .catch((err) => next(new Error("Couldn't Create Premission")));
+    .catch((err) => next(new Error("Couldn't Create Permission")));
 });
 
 permissionRouter
@@ -38,9 +39,7 @@ permissionRouter
     )
       .then(
         (permission) => {
-          res.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
-          res.json(permission);
+          res.status(200).res.json(permission);
         },
         (err) => next(err)
       )
@@ -50,9 +49,7 @@ permissionRouter
     Permissions.findByIdAndDelete(req.params.id)
       .then(
         (permission) => {
-          res.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
-          res.json(permission);
+          res.status(200).res.json(permission);
         },
         (err) => next(err)
       )

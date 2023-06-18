@@ -88,7 +88,7 @@ SubscribeRouter.post("/sendEmail", async (req, res, next) => {
     });
   }
 
-  res.status(200).send("Welcome emails sent successfully!");
+  res.status(200).json({ message: "Welcome emails sent successfully" });
 });
 
 SubscribeRouter.post("/", (req, res) => {

@@ -15,7 +15,7 @@ DeveloperRouter.post("/", middleware.isAdmin, async (req, res, next) => {
       () => {
         res.status(200).json({
           success: true,
-          message: "Developer is created successfully",
+          message: "Developer Created Successfully",
         });
       },
       (err) => next(err)
@@ -59,9 +59,7 @@ DeveloperRouter.patch("/:id", async (req, res, next) => {
   Developer.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true })
     .then(
       () => {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.json("Developer Updated Successfully.");
+        res.status(200).json("Developer Updated Successfully");
       },
       (err) => next(err)
     )
@@ -73,9 +71,7 @@ DeveloperRouter.delete("/:id", async (req, res, next) => {
   Developer.findByIdAndDelete(req.params.id)
     .then(
       () => {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.json({ success: true, message: "Developer Deleted" });
+        res.status(200).json({ success: true, message: "Developer Deleted" });
       },
       (err) => next(err)
     )
@@ -102,11 +98,11 @@ DeveloperRouter.route("/developer/:names").get((req, res, next) => {
     })
     .catch((err) => next(err));
 });
+
 DeveloperRouter.route("/developers/:search").get((req, res, next) => {
   const minAmount = req.body.minAmount;
   const maxAmount = req.body.maxAmount;
   const position = req.body.position;
-
   Developer.aggregate([
     {
       $match: {

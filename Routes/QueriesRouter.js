@@ -5,7 +5,6 @@ const Queries = require("../Models/Queries");
 // Create a queries
 QueriesRouter.post("/", async (req, res, next) => {
   const { name, company, email } = req.body;
-
   const queriesData = new Queries({
     name,
     company,

@@ -110,7 +110,9 @@ UserRouter.get("/", async (req, res, next) => {
   }
 });
 
-UserRouter.get("/user:id", middleware.isAdmin, (req, res, next) => {
+UserRouter.get("/:id", 
+middleware.isAdmin,
+(req, res, next) => {
   try {
     User.findById(req.params.id)
       .populate("role")
@@ -160,9 +162,7 @@ UserRouter.patch("/:id", async (req, res, next) => {
   User.findByIdAndUpdate(req.params.id, { $push: req.body }, { new: true })
     .then(
       (user) => {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.json("User Updated Successfully.");
+        res.status(200).res.json("User Updated Successfully");
       },
       (err) => next(err)
     )
@@ -173,9 +173,7 @@ UserRouter.delete("/:id", middleware.isAdmin, async (req, res, next) => {
   User.findByIdAndDelete(req.params.id)
     .then(
       (user) => {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.json({ success: true, message: "User Deleted" });
+        res.status(200).res.json({ success: true, message: "User Deleted" });
       },
       (err) => next(err)
     )
