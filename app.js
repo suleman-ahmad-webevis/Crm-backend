@@ -93,7 +93,7 @@ app.use((err, req, res, next) => {
     },
   });
 });
-app.listen(config.PORT || 8082, function () {
+app.listen( 8082, function () {
   console.log(`I'm listening at localhost:${config.PORT}`);
 });
 module.exports = app;
