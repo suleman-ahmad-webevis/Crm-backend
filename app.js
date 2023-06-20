@@ -4,7 +4,7 @@ var app = express();
 const cors = require("cors");
 var createError = require("http-errors");
 var path = require("path");
-var bodyParser = require("body-parser");
+// var bodyParser = require("body-parser");
 require("dotenv").config();
 const expressSession = require("express-session");
 const MongoStore = require("connect-mongo");
@@ -15,20 +15,19 @@ var config = require("./config");
 //DBConnection
 const connectDB = require("./config/database");
 connectDB();
-
 //Routes
-const UsersRouter = require("./Routes/UsersRouter");
-const PermissionRouter = require("./Routes/PermissionRouter");
-const RoleRouter = require("./Routes/RoleRouter");
-const SubscribeRouter = require("./Routes/SubscribeNewsletterRoute");
-const QueriesRouter = require("./Routes/QueriesRouter");
-const HireDeveloper = require("./Routes/HireDeveloper");
-const MeetingsRouter = require("./Routes/MeetingsRouter");
-const DealsRouter = require("./Routes/DealsRouter");
-const OnBoardsRouter = require("./Routes/OnBoardsRouter");
-const DeveloperRouter = require("./Routes/Developer");
-const ServiceRouter = require("./Routes/ServiceRouter");
-app.use(cors({ origin: "*" }));
+const UsersRouter = require("./routes/UsersRouter");
+const PermissionRouter = require("./routes/PermissionRouter");
+const RoleRouter = require("./routes/RoleRouter");
+const SubscribeRouter = require("./routes/SubscribeNewsletterRoute");
+const QueriesRouter = require("./routes/QueriesRouter");
+const HireDeveloper = require("./routes/HireDeveloper");
+const MeetingsRouter = require("./routes/MeetingsRouter");
+const DealsRouter = require("./routes/DealsRouter");
+const OnBoardsRouter = require("./routes/OnBoardsRouter");
+const DeveloperRouter = require("./routes/Developer");
+const ServiceRouter = require("./routes/ServiceRouter");
+app.use(cors({ origin: "*", credentials: true }));
 // const url = process.env.MONGO_URL;
 // const connect = mongoose.connect(url);
 // const dotenv = require("dotenv");
@@ -50,21 +49,22 @@ app.use(
     secret: config.secretKey,
     resave: false,
     saveUninitialized: true,
+    cookie: { secure: true },
     store: MongoStore.create({
       mongoUrl: process.env.MONGO_URL,
       collectionName: "sessions",
     }),
     // cookie: { maxAge: 1000 * 60 * 60 * 40 },
-    cookie: { maxAge: 1000 * 60 * 60 * 40, secure: true },
-    // cookie: { secure: true }
+    // cookie: { maxAge: 1000 * 60 * 60 * 40, secure: true },
+    // cookie: { secure: true },
   })
 );
 app.use(express.static("./assets"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 //Routes

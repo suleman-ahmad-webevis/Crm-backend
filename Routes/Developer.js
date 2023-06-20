@@ -1,7 +1,7 @@
 const express = require("express");
 const DeveloperRouter = express.Router();
-const Developer = require("../Models/Developer");
-const middleware = require("../middleware");
+const Developer = require("../models/Developer");
+const middleware = require("../middlewares/auth");
 
 // Create a new deal
 DeveloperRouter.post("/", middleware.isAdmin, async (req, res, next) => {

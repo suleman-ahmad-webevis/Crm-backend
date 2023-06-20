@@ -1,7 +1,7 @@
 const express = require("express");
 const permissionRouter = express.Router();
-const middleware = require("../middleware");
-const Permissions = require("../Models/Permission");
+const middleware = require("../middlewares/auth");
+const Permissions = require("../models/Permission");
 
 permissionRouter.get("/", (req, res, next) => {
   Permissions.find({})

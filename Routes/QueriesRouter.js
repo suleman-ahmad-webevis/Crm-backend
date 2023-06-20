@@ -1,6 +1,6 @@
 const express = require("express");
 const QueriesRouter = express.Router();
-const Queries = require("../Models/Queries");
+const Queries = require("../models/Queries");
 
 // Create a queries
 QueriesRouter.post("/", async (req, res, next) => {

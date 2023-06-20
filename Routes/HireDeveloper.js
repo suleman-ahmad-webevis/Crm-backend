@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const HireDeveloper = require("../Models/HireDeveloper");
+const HireDeveloper = require("../models/HireDeveloper");
 
 // Create a new deal
 router.post("/", async (req, res) => {

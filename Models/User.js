@@ -1,10 +1,13 @@
 // const { Timestamp } = require("mongodb");
 const mongoose = require("mongoose");
-var passportLocalMongoose = require("passport-local-mongoose");
+// var passportLocalMongoose = require("passport-local-mongoose");
 
 const userSchema = new mongoose.Schema(
   {
-    username: {
+    name: {
+      type: String,
+    },
+    email: {
       type: String,
     },
     password: {
@@ -13,9 +16,9 @@ const userSchema = new mongoose.Schema(
     old_password: {
       type: String,
     },
-    token: {
-      type: String,
-    },
+    // token: {
+    //   type: String,
+    // },
     status: {
       type: String,
       require: true,
@@ -28,7 +31,7 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-userSchema.plugin(passportLocalMongoose);
+// userSchema.plugin(passportLocalMongoose);
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;

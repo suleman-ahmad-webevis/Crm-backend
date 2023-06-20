@@ -1,7 +1,7 @@
 const express = require("express");
 const RoleRouter = express.Router();
-const Role = require("../Models/Role");
-const middleware = require("../middleware");
+const Role = require("../models/Role");
+const middleware = require("../middlewares/auth");
 
 RoleRouter.route("/").get((req, res, next) => {
   Role.find({})

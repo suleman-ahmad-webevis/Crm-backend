@@ -1,7 +1,7 @@
 const express = require("express");
 const ServiceRouter = express.Router();
-const Service = require("../Models/Service");
-const middleware = require("../middleware");
+const Service = require("../models/Service");
+const middleware = require("../middlewares/auth");
 
 // Get all Service
 ServiceRouter.get("/", middleware.isAdmin, async (req, res, next) => {

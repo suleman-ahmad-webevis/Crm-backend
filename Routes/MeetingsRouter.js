@@ -1,6 +1,6 @@
 const express = require("express");
 const MeetingsRouter = express.Router();
-const Meetings = require("../Models/Meeting");
+const Meetings = require("../models/Meeting");
 
 // Create a new meeting
 MeetingsRouter.post("/", async (req, res, next) => {

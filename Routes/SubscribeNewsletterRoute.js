@@ -1,6 +1,6 @@
 const express = require("express");
 const SubscribeRouter = express.Router();
-const SubscribeModel = require("../Models/SubscribeNewsletter");
+const SubscribeModel = require("../models/SubscribeNewsletter");
 const nodemailer = require("nodemailer");
 const multer = require("multer");
 const fs = require("fs");
