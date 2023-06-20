@@ -18,7 +18,7 @@ connectDB();
 //Routes
 const UsersRouter = require("./Routes/UsersRouter");
 
-app.use(cors({ origin: "*", credentials: true }));
+app.use(cors({ origin: "*" }));
 // const url = process.env.MONGO_URL;
 // const connect = mongoose.connect(url);
 // const dotenv = require("dotenv");
@@ -40,12 +40,11 @@ app.use(
     secret: config.secretKey,
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: true },
     store: MongoStore.create({
       mongoUrl: process.env.MONGO_URL,
       collectionName: "sessions",
     }),
-    // cookie: { maxAge: 1000 * 60 * 60 * 40 },
+    cookie: { maxAge: 1000 * 60 * 60 * 40 },
     // cookie: { maxAge: 1000 * 60 * 60 * 40, secure: true },
     // cookie: { secure: true },
   })
