@@ -1,6 +1,6 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
-const User = require("../models/User");
+const User = require("../Models/User");
 
 passport.serializeUser(function (user, done) {
   console.log("The serializeUser");
@@ -24,12 +24,12 @@ passport.use(
       try {
         User.findOne({ email: username }, function (err, user) {
           if (err) {
-            return done(err, false, { message: "Invalid Email or password" })
-        } else if (user) {
+            return done(err, false, { message: "Invalid Email or password" });
+          } else if (user) {
             return done(null, user);
-        } else {
+          } else {
             return done(null, false, { message: "User Does not exist." });
-        }
+          }
         });
       } catch (err) {
         return done(err, false, { message: "Error while authenticating." });

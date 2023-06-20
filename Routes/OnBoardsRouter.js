@@ -1,6 +1,6 @@
 const express = require("express");
 const onBoardRouter = express.Router();
-const OnBoard = require("../models/OnBoard");
+const OnBoard = require("../Models/OnBoard");
 
 // Create a new onBoard
 onBoardRouter.post("/", async (req, res, next) => {

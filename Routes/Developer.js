@@ -1,6 +1,6 @@
 const express = require("express");
 const DeveloperRouter = express.Router();
-const Developer = require("../models/Developer");
+const Developer = require("../Models/Developer");
 const middleware = require("../middlewares/auth");
 
 // Create a new deal
