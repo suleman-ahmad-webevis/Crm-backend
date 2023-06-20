@@ -69,16 +69,16 @@ app.use(passport.initialize());
 app.use(passport.session());
 //Routes
 app.use("/user", UsersRouter);
-app.use("/permissions", PermissionRouter);
-app.use("/role", RoleRouter);
-app.use("/subscribe-newsletter", SubscribeRouter);
-app.use("/query", QueriesRouter);
-app.use("/hire-developer", HireDeveloper);
-app.use("/meeting", MeetingsRouter);
-app.use("/deal", DealsRouter);
-app.use("/onBoard", OnBoardsRouter);
-app.use("/developer", DeveloperRouter);
-app.use("/service", ServiceRouter);
+// app.use("/permissions", PermissionRouter);
+// app.use("/role", RoleRouter);
+// app.use("/subscribe-newsletter", SubscribeRouter);
+// app.use("/query", QueriesRouter);
+// app.use("/hire-developer", HireDeveloper);
+// app.use("/meeting", MeetingsRouter);
+// app.use("/deal", DealsRouter);
+// app.use("/onBoard", OnBoardsRouter);
+// app.use("/developer", DeveloperRouter);
+// app.use("/service", ServiceRouter);
 app.use(function (req, res, next) {
   next(createError(404));
 });
@@ -93,7 +93,7 @@ app.use((err, req, res, next) => {
     },
   });
 });
-app.listen( 8082, function () {
+app.listen(8082, function () {
   console.log(`I'm listening at localhost:${config.PORT}`);
 });
 module.exports = app;
