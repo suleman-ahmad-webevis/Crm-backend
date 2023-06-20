@@ -17,16 +17,7 @@ const connectDB = require("./config/database");
 connectDB();
 //Routes
 const UsersRouter = require("./Routes/UsersRouter");
-// const PermissionRouter = require("./Routes/PermissionRouter");
-// const RoleRouter = require("./Routes/RoleRouter");
-// const SubscribeRouter = require("./Routes/SubscribeNewsletterRoute");
-// const QueriesRouter = require("./Routes/QueriesRouter");
-// const HireDeveloper = require("./Routes/HireDeveloper");
-// const MeetingsRouter = require("./Routes/MeetingsRouter");
-// const DealsRouter = require("./Routes/DealsRouter");
-// const OnBoardsRouter = require("./Routes/OnBoardsRouter");
-// const DeveloperRouter = require("./Routes/Developer");
-// const ServiceRouter = require("./Routes/ServiceRouter");
+
 app.use(cors({ origin: "*", credentials: true }));
 // const url = process.env.MONGO_URL;
 // const connect = mongoose.connect(url);
@@ -69,16 +60,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 //Routes
 app.use("/user", UsersRouter);
-// app.use("/permissions", PermissionRouter);
-// app.use("/role", RoleRouter);
-// app.use("/subscribe-newsletter", SubscribeRouter);
-// app.use("/query", QueriesRouter);
-// app.use("/hire-developer", HireDeveloper);
-// app.use("/meeting", MeetingsRouter);
-// app.use("/deal", DealsRouter);
-// app.use("/onBoard", OnBoardsRouter);
-// app.use("/developer", DeveloperRouter);
-// app.use("/service", ServiceRouter);
+
 app.use(function (req, res, next) {
   next(createError(404));
 });
