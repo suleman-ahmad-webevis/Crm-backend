@@ -4,6 +4,7 @@ const Deals = require("../Models/Deal");
 
 // Create a new deal
 DealsRouter.post("/", async (req, res, next) => {
+  console.log("ad");
   const deal = new Deals({
     client_name: req.body.client_name,
     developer_name: req.body.developer_name,
