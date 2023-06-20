@@ -16,7 +16,7 @@ var config = require("./config");
 const connectDB = require("./config/database");
 connectDB();
 //Routes
-const UsersRouter = require("./routes/UsersRouter");
+// const UsersRouter = require("./routes/UsersRouter");
 const PermissionRouter = require("./routes/PermissionRouter");
 const RoleRouter = require("./routes/RoleRouter");
 const SubscribeRouter = require("./routes/SubscribeNewsletterRoute");
@@ -68,7 +68,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 //Routes
-app.use("/user", UsersRouter);
+// app.use("/user", UsersRouter);
 app.use("/permissions", PermissionRouter);
 app.use("/role", RoleRouter);
 app.use("/subscribe-newsletter", SubscribeRouter);
